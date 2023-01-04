@@ -1,6 +1,7 @@
 using DB;
 using Microsoft.EntityFrameworkCore;
 using ProvidersApi;
+using ProvidersApi.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,9 +33,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+app.UseMiddleware<ApiSettingsMiddleware>();
 
 app.MapControllers();
 
