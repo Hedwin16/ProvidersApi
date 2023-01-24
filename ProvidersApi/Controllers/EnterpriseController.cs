@@ -10,11 +10,13 @@ namespace ProvidersApi.Controllers
     {
         private readonly ApiSettings _apiSettings;
         private readonly ILogger<EnterpriseController> _logger;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public EnterpriseController(IOptions<ApiSettings> options, ILogger<EnterpriseController> logger)
+        public EnterpriseController(IOptions<ApiSettings> options, ILogger<EnterpriseController> logger, IHttpClientFactory httpClientFactory)
         {
             _apiSettings = options.Value;
             _logger = logger;
+            _httpClientFactory = httpClientFactory;
         }
 
         [HttpPost("api/enterprises")]
@@ -26,7 +28,7 @@ namespace ProvidersApi.Controllers
             return new List<Enterprise>();
         }
 
-        private bool IsApiKeyValid()
+        public bool IsApiKeyValid()
         {
             var request_key = Request.Headers
                 .Where(h => h.Key == "X-Api-Key")
@@ -35,6 +37,12 @@ namespace ProvidersApi.Controllers
             var apiKey = _apiSettings?.ApiKey;
 
             return apiKey == request_key;
+        }
+        public void DoSomething(string message)
+        {
+
+            _logger.LogInformation(message);
+            _httpClientFactory.CreateClient("");
         }
 
     }

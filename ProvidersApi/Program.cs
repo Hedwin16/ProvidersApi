@@ -16,15 +16,21 @@ builder.Services.AddDbContext<ProvidersContext>(options=>
     options.UseSqlServer(builder.Configuration.GetConnectionString("ProvidersContext"))
 );
 
+builder.Services.AddHttpClient("Cliente-Digest", httpClient =>
+{
+    httpClient.BaseAddress = new Uri("http://myurl");
+});
+
+
 builder.Services.Configure<ApiSettings>(builder.Configuration.GetSection(ApiSettings.Settings));
 
 var app = builder.Build();
 
-//using (var scope = app.Services.CreateScope())
-//{
-//    var context = scope.ServiceProvider.GetRequiredService<ProvidersContext>();
-//    context.Database.Migrate();
-//}
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<ProvidersContext>();
+    context.Database.Migrate();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
